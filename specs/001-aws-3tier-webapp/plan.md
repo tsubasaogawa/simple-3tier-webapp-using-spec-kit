@@ -9,25 +9,23 @@
 
 [Extract from feature spec: primary requirement + technical approach from research]
 
-## 技術コンテキスト
+## Technical Context
 
-この機能は、AWS上に3層Webアプリケーションを構築するためのインフラストラクチャをプロビジョニングします。
+<!--
+  ACTION REQUIRED: Replace the content in this section with the technical details
+  for the project. The structure here is presented in advisory capacity to guide
+  the iteration process.
+-->
 
-- **IaC (Infrastructure as Code)**: Terraformを利用して、すべてのAWSリソースをコードで管理します。
-- **フロントエンド層**: AWS API Gatewayを利用して、HTTPリクエストを受け付け、バックエンドにルーティングします。
-- **バックエンド層**: AWS ECS Fargateを利用して、コンテナ化されたアプリケーションを実行します。`terraform-aws-modules/ecs` モジュールを使用します。
-- **データベース層**: AWS DynamoDBをデータストアとして利用します。
-- **アプリケーションロジック**: インフラの動作を検証するため、シンプルなTodoアプリケーション（REST API）をコンテナとしてデプロイします。
-
-### 依存関係と統合
-
-- **外部モジュール**: `terraform-aws-modules/ecs` の利用が必須です。VPC構築のため、`terraform-aws-modules/vpc` の利用も推奨されます。
-- **AWSサービス**: API Gateway, ECS (Fargate), DynamoDB, IAM, CloudWatch, VPC などのAWSサービスと連携します。
-
-### 未確定要素とリスク
-
-- **[NEEDS CLARIFICATION]**: Todoアプリケーションの具体的な技術スタック（言語、フレームワーク）が指定されていません。
-- **[NEEDS CLARIFICATION]**: VPC、サブネット、セキュリティグループなどの詳細なネットワークアーキテクチャが指定されていません。
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: [single/web/mobile - determines source structure]  
+**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
+**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
