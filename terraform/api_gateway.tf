@@ -1,7 +1,6 @@
 resource "aws_apigatewayv2_api" "main" {
   name          = "${var.project_name}-api"
   protocol_type = "HTTP"
-  target        = "arn:aws:servicediscovery:${var.aws_region}:${data.aws_caller_identity.current.account_id}:service/${aws_service_discovery_service.app.id}"
 
   tags = {
     Name = "${var.project_name}-api"
