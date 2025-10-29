@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: Todo API
+  description: シンプルなTodoアプリケーションのAPI仕様
+  version: 1.0.0
+
+paths:
+  /todos:
+    get:
+      summary: Todoリストを取得する
+      operationId: getTodos
+      responses:
+        '200':
+          description: Todoリストの取得に成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TodoItem'
+    post:
+      summary: 新しいTodoを作成する
+      operationId: createTodo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoCreate'
+      responses:
+        '201':
+          description: Todoの作成に成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoItem'
+
+  /todos/{todoId}:
+    get:
+      summary: 特定のTodoを取得する
+      operationId: getTodoById
+      parameters:
+        - name: todoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Todoの取得に成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoItem'
+        '404':
+          description: Todoが見つからない
+    put:
+      summary: 特定のTodoを更新する
+      operationId: updateTodo
+      parameters:
+        - name: todoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoUpdate'
+      responses:
+        '200':
+          description: Todoの更新に成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoItem'
+        '404':
+          description: Todoが見つからない
+    delete:
+      summary: 特定のTodoを削除する
+      operationId: deleteTodo
+      parameters:
+        - name: todoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Todoの削除に成功
+        '404':
+          description: Todoが見つからない
+
+components:
+  schemas:
+    TodoBase:
+      type: object
+      properties:
+        task:
+          type: string
+          description: タスクの内容
+          example: "Buy milk"
+        status:
+          type: string
+          enum: ["todo", "in-progress", "done"]
+          description: タスクの状態
+          example: "todo"
+
+    TodoCreate:
+      allOf:
+        - $ref: '#/components/schemas/TodoBase'
+        - type: object
+          required:
+            - task
+
+    TodoUpdate:
+      allOf:
+        - $ref: '#/components/schemas/TodoBase'
+
+    TodoItem:
+      allOf:
+        - $ref: '#/components/schemas/TodoBase'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Todoの一意なID
+            createdAt:
+              type: string
+              format: date-time
+              description: 作成日時
+            updatedAt:
+              type: string
+              format: date-time
+              description: 更新日時
+          required:
+            - id
+            - task
+            - status
+            - createdAt
+            - updatedAt
