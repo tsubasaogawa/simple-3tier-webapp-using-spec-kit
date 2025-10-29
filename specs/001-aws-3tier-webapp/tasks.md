@@ -13,7 +13,7 @@
 - [X] **T0.3**: `terraform` ディレクトリ内に `vpc.tf` を作成し、単一のパブリックサブネットを持つVPCを定義する。
 - [X] **T0.4**: `terraform` ディレクトリ内に `dynamodb.tf` を作成し、TodoItem用のDynamoDBテーブルを定義する。
 - [X] **T0.5**: `terraform` ディレクトリ内に `ecs.tf` を作成し、ECSクラスタ、タスク定義、サービス、およびCloud Mapサービスディスカバリを定義する。
-- [ ] **T0.6**: `terraform` ディレクトリ内に `api_gateway.tf` を作成し、API Gateway、VPCリンク、およびECSサービスへの統合を定義する。
+- [X] **T0.6**: `terraform` ディレクトリ内に `api_gateway.tf` を作成し、API Gateway、VPCリンク、およびECSサービスへの統合を定義する。
 - [ ] **T0.7**: `src/app` ディレクトリを作成し、FastAPIアプリケーションのスケルトンを作成する。
 - [ ] **T0.8**: `src/app` ディレクトリ内に `Dockerfile` を作成し、FastAPIアプリケーションをコンテナ化する。
 - [ ] **T0.9**: `src/app` ディレクトリ内に `requirements.txt` を作成し、FastAPIとuvicornの依存関係を定義する。
@@ -26,11 +26,7 @@
 ## フェーズ2: コア実装
 
 - [ ] **T2.1**: FastAPIアプリケーションにTodoItemのCRUDエンドポイントを実装する。
-- [ ] **T2.2**: DynamoDBとの連携ロジックを実装する。
-
-## フェーズ3: 統合
-
-- [ ] **T3.1**: Terraformを適用し、AWSインフラをデプロイする。
+- [ ] **T2.2**: DynamoDBとの連携ロ- [ ] **T3.1**: Terraformを適用し、AWSインフラをデプロイする。
 - [ ] **T3.2**: Dockerイメージをビルドし、ECRにプッシュする。
 - [ ] **T3.3**: ECSサービスを更新し、新しいイメージをデプロイする。
 - [ ] **T3.4**: API Gateway経由でTodoアプリケーションの動作を確認する。
