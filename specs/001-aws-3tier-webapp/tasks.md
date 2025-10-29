@@ -16,7 +16,7 @@
 - [X] **T0.6**: `terraform` ディレクトリ内に `api_gateway.tf` を作成し、API Gateway、VPCリンク、およびECSサービスへの統合を定義する。
 - [X] **T0.7**: `src/app` ディレクトリを作成し、FastAPIアプリケーションのスケルトンを作成する。
 - [X] **T0.8**: `src/app` ディレクトリ内に `Dockerfile` を作成し、FastAPIアプリケーションをコンテナ化する。
-- [ ] **T0.9**: `src/app` ディレクトリ内に `requirements.txt` を作成し、FastAPIとuvicornの依存関係を定義する。
+- [X] **T0.9**: `src/app` ディレクトリ内に `requirements.txt` を作成し、FastAPIとuvicornの依存関係を定義する。
 
 ## フェーズ1: テスト
 
@@ -39,4 +39,3 @@
 
 - [ ] **T4.1**: `quickstart.md` の内容を最終確認し、必要に応じて更新する。
 - [ ] **T4.2**: `README.md` を作成し、プロジェクトの概要、セットアップ、デプロイ方法などを記述する。
-
