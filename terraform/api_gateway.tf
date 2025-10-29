@@ -10,7 +10,7 @@ resource "aws_apigatewayv2_api" "main" {
 
 resource "aws_apigatewayv2_vpc_link" "main" {
   name               = "${var.project_name}-vpc-link"
-  security_group_ids = [module.ecs.fargate_services["app"].security_group_id]
+  security_group_ids = [aws_security_group.ecs_tasks.id]
   subnet_ids         = [aws_subnet.public.id]
 
   tags = {

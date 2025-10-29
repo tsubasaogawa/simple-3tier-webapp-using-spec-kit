@@ -1,44 +1,145 @@
 # ------------------------------------------------------------------------------
-# ECS (using terraform-aws-modules/ecs)
+# ECS Cluster
 # ------------------------------------------------------------------------------
 
-module "ecs" {
-  source  = "terraform-aws-modules/ecs/aws"
-  version = "~> 5.0"
+resource "aws_ecs_cluster" "main" {
+  name = var.project_name
 
-  cluster_name = var.project_name
-
-  # Fargate configuration
-  fargate_capacity_providers = {
-    FARGATE = {
-      default_capacity_provider_strategy = {
-        weight = 100
-      }
-    }
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
   }
 
-  # ECR Repository
-  ecr_repository_name = var.project_name
-  ecr_repository_image_tag_mutability = "MUTABLE"
-  ecr_repository_scan_on_push         = true
+  tags = {
+    Project = var.project_name
+  }
+}
 
-  # Task Definition
-  task_definition_cpu                      = 256
-  task_definition_memory                   = 512
-  task_definition_requires_compatibilities = ["FARGATE"]
-  task_definition_network_mode             = "awsvpc"
-  task_definition_family                   = "${var.project_name}-app"
+# ------------------------------------------------------------------------------
+# ECR Repository
+# ------------------------------------------------------------------------------
 
-  task_definition_container_definitions = {
-    app = {
+resource "aws_ecr_repository" "app" {
+  name                 = "${var.project_name}-app"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = {
+    Name = "${var.project_name}-app-ecr"
+  }
+}
+
+# ------------------------------------------------------------------------------
+# CloudWatch Log Group
+# ------------------------------------------------------------------------------
+
+resource "aws_cloudwatch_log_group" "app" {
+  name              = "/ecs/${var.project_name}-app"
+  retention_in_days = 7
+
+  tags = {
+    Name = "${var.project_name}-app-log-group"
+  }
+}
+
+# ------------------------------------------------------------------------------
+# IAM Roles for ECS Tasks
+# ------------------------------------------------------------------------------
+
+# Execution Role: Allows ECS agent to make AWS API calls on your behalf (e.g., pull ECR images, write logs)
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name = "${var.project_name}-ecs-task-execution-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
+        Principal = { Service = "ecs-tasks.amazonaws.com" }
+      },
+    ]
+  })
+
+  tags = {
+    Name = "${var.project_name}-ecs-task-execution-role"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+# Task Role: Allows the application running in the container to make AWS API calls (e.g., access DynamoDB)
+resource "aws_iam_role" "ecs_task_role" {
+  name = "${var.project_name}-ecs-task-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
+        Principal = { Service = "ecs-tasks.amazonaws.com" }
+      },
+    ]
+  })
+
+  tags = {
+    Name = "${var.project_name}-ecs-task-role"
+  }
+}
+
+resource "aws_iam_role_policy" "dynamodb_access" {
+  name = "${var.project_name}-dynamodb-access-policy"
+  role = aws_iam_role.ecs_task_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "dynamodb:BatchGetItem",
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:Query",
+          "dynamodb:Scan",
+        ]
+        Effect   = "Allow"
+        Resource = aws_dynamodb_table.todo_items.arn
+      },
+    ]
+  })
+}
+
+# ------------------------------------------------------------------------------
+# ECS Task Definition
+# ------------------------------------------------------------------------------
+
+resource "aws_ecs_task_definition" "app" {
+  family                   = "${var.project_name}-app-task"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
+
+  container_definitions = jsonencode([
+    {
       name      = "${var.project_name}-app"
-      image     = "PLACEHOLDER_IMAGE_URL" # This will be updated with the ECR repo URL later
+      image     = "${aws_ecr_repository.app.repository_url}:latest"
       essential = true
       cpu       = 256
       memory    = 512
-      port_mappings = [
+      portMappings = [
         {
-          name          = "${var.project_name}-app-port"
           containerPort = var.app_port
           hostPort      = var.app_port
           protocol      = "tcp"
@@ -50,73 +151,19 @@ module "ecs" {
           value = aws_dynamodb_table.todo_items.name
         }
       ]
-      log_configuration = {
+      logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = "/ecs/${var.project_name}"
+          "awslogs-group"         = aws_cloudwatch_log_group.app.name
           "awslogs-region"        = var.aws_region
-          "awslogs-stream-prefix" = "app"
+          "awslogs-stream-prefix" = "ecs"
         }
       }
     }
-  }
-
-  # Task Role with DynamoDB access
-  task_iam_role_name = "${var.project_name}-task-role"
-  task_iam_policies = {
-    DynamoDBAccess = {
-      statement = [
-        {
-          actions = [
-            "dynamodb:BatchGetItem",
-            "dynamodb:GetItem",
-            "dynamodb:PutItem",
-            "dynamodb:UpdateItem",
-            "dynamodb:DeleteItem",
-            "dynamodb:Query",
-            "dynamodb:Scan",
-          ]
-          resources = [aws_dynamodb_table.todo_items.arn]
-        }
-      ]
-    }
-  }
-
-  # Fargate Service
-  fargate_services = {
-    app = {
-      name                              = "${var.project_name}-service"
-      desired_count                     = 1
-      cpu                               = 256
-      memory                            = 512
-      assign_public_ip                  = true
-      subnets                           = [aws_subnet.public.id]
-      security_group_rules = {
-        ingress_vpc_app_port = {
-          type        = "ingress"
-          from_port   = var.app_port
-          to_port     = var.app_port
-          protocol    = "tcp"
-          cidr_blocks = [aws_vpc.main.cidr_block]
-          description = "Allow traffic from within the VPC on the app port"
-        }
-        egress_all = {
-          type        = "egress"
-          from_port   = 0
-          to_port     = 0
-          protocol    = "-1"
-          cidr_blocks = ["0.0.0.0/0"]
-        }
-      }
-      # Service Discovery
-      service_registries = {
-        arn = aws_service_discovery_service.app.arn
-      }
-    }
-  }
+  ])
 
   tags = {
-    Project = var.project_name
+    Name = "${var.project_name}-app-task"
   }
 }
 
@@ -135,8 +182,7 @@ resource "aws_service_discovery_private_dns_namespace" "main" {
 }
 
 resource "aws_service_discovery_service" "app" {
-  name        = "app"
-  description = "Service Discovery for ${var.project_name} app"
+  name = "app"
 
   dns_config {
     namespace_id = aws_service_discovery_private_dns_namespace.main.id
@@ -157,52 +203,60 @@ resource "aws_service_discovery_service" "app" {
 }
 
 # ------------------------------------------------------------------------------
-# Workaround for dynamic ECR image URL in task definition
+# ECS Service
 # ------------------------------------------------------------------------------
 
-# The ECS module does not directly support using the ECR repository it creates
-# within the container definition of the task definition it also creates.
-# We use a local to merge the dynamic URL into the definition.
+resource "aws_ecs_service" "main" {
+  name            = "${var.project_name}-service"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.app.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
 
-locals {
-  # The module creates an ECR repository and its URL is available in module.ecs.ecr_repository_url
-  # We need to inject this URL into the container definition.
-  container_definitions_with_image = {
-    app = {
-      name      = "${var.project_name}-app"
-      image     = module.ecs.ecr_repository_url # Using the dynamic URL from the module's output
-      essential = true
-      cpu       = 256
-      memory    = 512
-      port_mappings = [
-        {
-          name          = "${var.project_name}-app-port"
-          containerPort = var.app_port
-          hostPort      = var.app_port
-          protocol      = "tcp"
-        }
-      ]
-      environment = [
-        {
-          name  = "DYNAMODB_TABLE_NAME"
-          value = aws_dynamodb_table.todo_items.name
-        }
-      ]
-      log_configuration = {
-        logDriver = "awslogs"
-        options = {
-          "awslogs-group"         = "/ecs/${var.project_name}"
-          "awslogs-region"        = var.aws_region
-          "awslogs-stream-prefix" = "app"
-        }
-      }
-    }
+  network_configuration {
+    subnets          = [aws_subnet.public.id]
+    security_groups  = [aws_security_group.ecs_tasks.id]
+    assign_public_ip = true
+  }
+
+  service_registries {
+    registry_arn = aws_service_discovery_service.app.arn
+  }
+
+  # Ensure the task definition is updated before the service is created
+  depends_on = [aws_ecs_task_definition.app]
+
+  tags = {
+    Name = "${var.project_name}-service"
   }
 }
 
-# We need to override the task definition created by the module with one that has the correct image URL.
-# Since the module doesn't allow direct overriding, we create a separate task definition
-# and will update the service to use it in a later step or manually.
-# For now, the module creates a placeholder. A more advanced setup might use a null_resource to run a local-exec provisioner.
-# For simplicity, we will create the resources and note that the image needs to be specified when running the task.
-# The quickstart guide will reflect this.
+# ------------------------------------------------------------------------------
+# Security Group for ECS Tasks
+# ------------------------------------------------------------------------------
+
+resource "aws_security_group" "ecs_tasks" {
+  name        = "${var.project_name}-ecs-tasks-sg"
+  description = "Allow inbound traffic to ECS tasks"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port = var.app_port
+    to_port   = var.app_port
+    protocol  = "tcp"
+    # This should be locked down to the VPC Link's security group in a production setup
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow traffic from API Gateway VPC Link"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.project_name}-ecs-tasks-sg"
+  }
+}
