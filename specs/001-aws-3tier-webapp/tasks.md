@@ -15,7 +15,7 @@
 - [X] **T0.5**: `terraform` ディレクトリ内に `ecs.tf` を作成し、ECSクラスタ、タスク定義、サービス、およびCloud Mapサービスディスカバリを定義する。
 - [X] **T0.6**: `terraform` ディレクトリ内に `api_gateway.tf` を作成し、API Gateway、VPCリンク、およびECSサービスへの統合を定義する。
 - [X] **T0.7**: `src/app` ディレクトリを作成し、FastAPIアプリケーションのスケルトンを作成する。
-- [ ] **T0.8**: `src/app` ディレクトリ内に `Dockerfile` を作成し、FastAPIアプリケーションをコンテナ化する。
+- [X] **T0.8**: `src/app` ディレクトリ内に `Dockerfile` を作成し、FastAPIアプリケーションをコンテナ化する。
 - [ ] **T0.9**: `src/app` ディレクトリ内に `requirements.txt` を作成し、FastAPIとuvicornの依存関係を定義する。
 
 ## フェーズ1: テスト
