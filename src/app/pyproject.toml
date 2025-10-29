@@ -1,20 +1,25 @@
 [project]
-name = "app"
+name = "simple-3tier-webapp"
 version = "0.1.0"
-description = "Add your description here"
+description = "A simple 3-tier web application with FastAPI, ECS, and DynamoDB."
+requires-python = ">=3.9"
 dependencies = [
     "fastapi",
-    "uvicorn",
+    "uvicorn[standard]",
     "boto3",
 ]
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "httpx",
+]
 
-[tool.rye]
-managed = true
-dev-dependencies = []
+[tool.uv]
+dev-dependencies = [
+    "pytest",
+    "httpx",
+]
 
 [tool.hatch.metadata]
 allow-direct-references = true
