@@ -9,7 +9,7 @@
 ## フェーズ0: セットアップ
 
 - [X] **T0.1**: プロジェクトのルートディレクトリに `terraform` ディレクトリを作成し、Terraformのメイン設定ファイル (`main.tf`, `variables.tf`, `outputs.tf`) を作成する。
-- [ ] **T0.2**: `terraform` ディレクトリ内に `versions.tf` を作成し、AWSプロバイダとTerraformのバージョンを定義する。
+- [X] **T0.2**: `terraform` ディレクトリ内に `versions.tf` を作成し、AWSプロバイダとTerraformのバージョンを定義する。
 - [ ] **T0.3**: `terraform` ディレクトリ内に `vpc.tf` を作成し、単一のパブリックサブネットを持つVPCを定義する。
 - [ ] **T0.4**: `terraform` ディレクトリ内に `dynamodb.tf` を作成し、TodoItem用のDynamoDBテーブルを定義する。
 - [ ] **T0.5**: `terraform` ディレクトリ内に `ecs.tf` を作成し、ECSクラスタ、タスク定義、サービス、およびCloud Mapサービスディスカバリを定義する。
