@@ -5,6 +5,8 @@ prompt = """
 description: Generate an actionable, dependency-ordered tasks.md for the feature based on available design artifacts.
 ---
 
+**CAUTION**: ファイル生成やユーザーとのコミュニケーションはすべて日本語で行ってください。
+
 ## User Input
 
 ```text

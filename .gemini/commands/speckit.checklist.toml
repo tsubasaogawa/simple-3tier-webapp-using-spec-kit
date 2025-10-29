@@ -5,6 +5,8 @@ prompt = """
 description: Generate a custom checklist for the current feature based on user requirements.
 ---
 
+**CAUTION**: ファイル生成やユーザーとのコミュニケーションはすべて日本語で行ってください。
+
 ## Checklist Purpose: "Unit Tests for English"
 
 **CRITICAL CONCEPT**: Checklists are **UNIT TESTS FOR REQUIREMENTS WRITING** - they validate the quality, clarity, and completeness of requirements in a given domain.

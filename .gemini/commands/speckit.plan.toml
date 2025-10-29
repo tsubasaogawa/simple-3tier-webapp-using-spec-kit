@@ -5,6 +5,8 @@ prompt = """
 description: Execute the implementation planning workflow using the plan template to generate design artifacts.
 ---
 
+**CAUTION**: ファイル生成やユーザーとのコミュニケーションはすべて日本語で行ってください。
+
 ## User Input
 
 ```text

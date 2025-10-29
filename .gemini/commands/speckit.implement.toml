@@ -5,6 +5,8 @@ prompt = """
 description: Execute the implementation plan by processing and executing all tasks defined in tasks.md
 ---
 
+**CAUTION**: ファイル生成やユーザーとのコミュニケーションはすべて日本語で行ってください。
+
 ## User Input
 
 ```text

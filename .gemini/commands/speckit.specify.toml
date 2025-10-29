@@ -5,6 +5,8 @@ prompt = """
 description: Create or update the feature specification from a natural language feature description.
 ---
 
+**CAUTION**: ファイル生成やユーザーとのコミュニケーションはすべて日本語で行ってください。
+
 ## User Input
 
 ```text
