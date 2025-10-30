@@ -1,0 +1,16 @@
+# Docker Ignore for simple-3tier-webapp
+
+.git
+.gitignore
+.dockerignore
+.terraformignore
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Logs
+*.log
+*.log.*

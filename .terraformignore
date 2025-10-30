@@ -1,0 +1,20 @@
+# Terraform Ignore for simple-3tier-webapp
+
+# Terraform state files
+*.tfstate
+*.tfstate.backup
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Specific to Terraform CLI
+.terraform/
+.terraform.lock.hcl
+
+# .tfvars files
+*.tfvars
+*.tfvars.json
+
+# Provider cache
+.terraform/providers
