@@ -6,22 +6,41 @@ This project provides a simple 3-tier web application infrastructure on AWS, des
 
 The infrastructure is defined using Terraform and consists of the following components:
 
-*   **VPC**: A Virtual Private Cloud with a single public subnet to minimize costs associated with NAT Gateways.
-*   **Amazon ECS with AWS Fargate**: A serverless compute engine for containers. The application runs as a Fargate task, eliminating the need to manage servers.
-*   **Amazon DynamoDB**: A NoSQL database for storing application data (a simple Todo list).
+*   **VPC**: A Virtual Private Cloud with a single public subnet.
+*   **Amazon ECS with AWS Fargate**: A serverless compute engine for containers. The application runs as a Fargate task with a public IP, eliminating the need to manage servers or load balancers.
+*   **Amazon DynamoDB**: A NoSQL database for storing application data.
 *   **Amazon ECR**: A container registry to store the application's Docker image.
-*   **AWS Cloud Map**: For service discovery, allowing API Gateway to find the ECS tasks.
-*   **Amazon API Gateway with VPC Link**: Exposes the application's API to the internet. It connects directly to the ECS service via a VPC Link, avoiding the need for a load balancer.
 
-This architecture is optimized for low cost by avoiding managed NAT gateways and load balancers, as detailed in the [research documentation](./specs/001-aws-3tier-webapp/research.md).
+This architecture is optimized for low cost by avoiding managed NAT gateways, load balancers, API Gateway, and other managed services.
 
-## Prerequisites
+## Active Technologies
+- Python 3.13.0
+- FastAPI
+- Uvicorn
+- Boto3
+- Terraform
+- Docker
+- AWS (ECS, Fargate, DynamoDB, ECR, VPC)
 
-- An AWS account with administrative privileges.
-- AWS CLI configured with your credentials.
-- Terraform (v1.0.0 or later).
-- Docker.
-- Python 3.11 and `uv`.
+## Project Structure
+```
+.
+├── GEMINI.md
+├── README.md
+├── specs
+│   ├── 001-aws-3tier-webapp
+│   └── 002-upgrade-python-version
+├── src
+│   └── app
+│       ├── Dockerfile
+│       ├── main.py
+│       ├── pyproject.toml
+│       └── tests
+└── terraform
+    ├── main.tf
+    ├── variables.tf
+    └── versions.tf
+```
 
 ## Deployment
 
@@ -69,6 +88,10 @@ This architecture is optimized for low cost by avoiding managed NAT gateways and
 ## API Reference
 
 The API is documented using the OpenAPI specification. You can find the specification file here: [openapi.yml](./specs/001-aws-3tier-webapp/contracts/openapi.yml).
+
+## Recent Changes
+- **002-upgrade-python-version**: Upgraded Python version to 3.13 and updated dependencies.
+- **001-aws-3tier-webapp**: Initial setup of the 3-tier web application on AWS.
 
 ## Security
 
