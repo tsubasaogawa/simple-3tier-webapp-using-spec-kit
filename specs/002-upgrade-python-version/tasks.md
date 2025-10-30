@@ -21,8 +21,8 @@
 
 **Purpose**: 開発環境のPythonバージョンを設定します。
 
-- [ ] T001 [P] プロジェクトルートの `.python-version` ファイルを `3.13.0` に更新します。
-- [ ] T002 [P] `src/app/.python-version` ファイルを `3.13.0` に更新します。
+- [X] T001 [P] プロジェクトルートの `.python-version` ファイルを `3.13.0` に更新します。
+- [X] T002 [P] `src/app/.python-version` ファイルを `3.13.0` に更新します。
 
 ---
 
