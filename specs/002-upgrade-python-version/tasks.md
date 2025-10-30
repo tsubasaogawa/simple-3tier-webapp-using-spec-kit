@@ -35,7 +35,7 @@
 ### Implementation for User Story 1
 
 - [X] T003 [US1] `src/app/Dockerfile` のベースイメージを `python:3.13-slim` に更新します。
-- [ ] T004 [US1] `src/app/pyproject.toml` の `requires-python` を `>=3.13` に更新します。
+- [X] T004 [US1] `src/app/pyproject.toml` の `requires-python` を `>=3.13` に更新します。
 - [ ] T005 [US1] 仮想環境を再構築し、`pip install -e "src/app[dev]"` を実行して依存関係をインストールします。
 - [ ] T006 [US1] `pytest src/app/tests` を実行し、すべてのテストが成功することを確認します。
 - [ ] T007 [US1] `uvicorn src.app.main:app --reload` を実行し、ローカルサーバーが正常に起動することを確認します。
