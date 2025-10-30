@@ -1,0 +1,28 @@
+# Pre-commit Hook Configuration for Secret Scanning
+#
+# インストール方法 / Installation:
+# 1. pre-commitをインストール / Install pre-commit:
+#    pip install pre-commit
+#
+# 2. フックを有効化 / Enable the hook:
+#    pre-commit install
+#
+# 3. すべてのファイルで実行 / Run on all files:
+#    pre-commit run --all-files
+
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.2
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-yaml
+      - id: check-json
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: detect-private-key

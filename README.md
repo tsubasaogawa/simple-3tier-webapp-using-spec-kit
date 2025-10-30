@@ -69,3 +69,13 @@ This architecture is optimized for low cost by avoiding managed NAT gateways and
 ## API Reference
 
 The API is documented using the OpenAPI specification. You can find the specification file here: [openapi.yml](./specs/001-aws-3tier-webapp/contracts/openapi.yml).
+
+## Security
+
+This repository is protected by automated secret scanning using [Gitleaks](https://github.com/gitleaks/gitleaks). The scanning runs:
+- On every push to main/develop branches
+- On every pull request
+- Daily at 2:00 AM UTC
+- Can be triggered manually
+
+For security best practices and guidelines, please refer to [SECURITY.md](./SECURITY.md).
