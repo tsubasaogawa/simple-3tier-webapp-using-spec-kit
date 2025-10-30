@@ -131,6 +131,14 @@ gitleaks detect --source . --verbose
    
    ⚠️ **Warning**: Force pushing affects team members. Notify them beforehand.
 
+## Gitleaks設定 / Gitleaks Configuration
+
+このリポジトリには`.gitleaks.toml`設定ファイルがあり、誤検知を防ぐためのallowlist（許可リスト）が含まれています：
+
+This repository includes a `.gitleaks.toml` configuration file with an allowlist to prevent false positives:
+
+- **SECURITY.md**: セキュリティドキュメントの例示コードを除外 / Excludes example code in security documentation
+
 ## セキュリティスキャン結果 / Security Scan Results
 
 ### 最新スキャン / Latest Scan
@@ -141,6 +149,7 @@ gitleaks detect --source . --verbose
 - **スキャン範囲 / Scope**: 
   - 現在のファイル / Current files
   - Gitコミット履歴 / Git commit history
+  - 設定ファイル / Configuration: `.gitleaks.toml`
 
 ## 参考資料 / References
 

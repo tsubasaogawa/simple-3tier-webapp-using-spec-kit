@@ -78,4 +78,6 @@ This repository is protected by automated secret scanning using [Gitleaks](https
 - Daily at 2:00 AM UTC
 - Can be triggered manually
 
+The repository includes a `.gitleaks.toml` configuration file to customize scanning rules and prevent false positives.
+
 For security best practices and guidelines, please refer to [SECURITY.md](./SECURITY.md).
