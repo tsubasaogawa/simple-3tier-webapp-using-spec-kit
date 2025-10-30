@@ -44,14 +44,14 @@ The following information should **NEVER** be committed to the repository:
    Terraform/AWSを使用する際は：
    When using Terraform/AWS:
    ```bash
-   # AWS CLIの設定を使用
-   # Use AWS CLI configuration
+   # AWS CLIの設定を使用（推奨）
+   # Use AWS CLI configuration (recommended)
    aws configure
    
-   # または環境変数を設定
-   # Or set environment variables
-   export AWS_ACCESS_KEY_ID="your-access-key"
-   export AWS_SECRET_ACCESS_KEY="your-secret-key"
+   # または環境変数を設定（値は環境から取得）
+   # Or set environment variables (values from environment)
+   export AWS_ACCESS_KEY_ID="$(aws configure get aws_access_key_id)"
+   export AWS_SECRET_ACCESS_KEY="$(aws configure get aws_secret_access_key)"
    ```
 
 4. **Terraform変数の管理 / Managing Terraform Variables**
@@ -59,8 +59,10 @@ The following information should **NEVER** be committed to the repository:
    機密情報を含む変数は`terraform.tfvars`ファイルに保存し、これは.gitignoreに含まれています：
    Variables with sensitive information should be stored in `terraform.tfvars` file, which is included in .gitignore:
    ```hcl
-   # terraform/terraform.tfvars (NOT committed)
-   aws_access_key = "your-access-key"
+   # terraform/terraform.tfvars (NOT committed to git)
+   # Example format (use actual values from your secure credential storage)
+   db_password = "your-secure-password-here"
+   api_key     = "your-api-key-here"
    ```
 
 ## 自動セキュリティスキャン / Automated Security Scanning
