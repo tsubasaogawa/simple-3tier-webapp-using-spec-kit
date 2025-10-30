@@ -173,41 +173,6 @@ resource "aws_ecs_task_definition" "app" {
 }
 
 # ------------------------------------------------------------------------------
-# Service Discovery (Cloud Map)
-# ------------------------------------------------------------------------------
-
-resource "aws_service_discovery_private_dns_namespace" "main" {
-  name        = "${var.project_name}.local"
-  description = "Private DNS Namespace for ${var.project_name}"
-  vpc         = aws_vpc.main.id
-
-  tags = {
-    Name = "${var.project_name}-sd-namespace"
-  }
-}
-
-resource "aws_service_discovery_service" "app" {
-  name = "app"
-
-  dns_config {
-    namespace_id = aws_service_discovery_private_dns_namespace.main.id
-    dns_records {
-      ttl  = 10
-      type = "A"
-    }
-    routing_policy = "MULTIVALUE"
-  }
-
-  health_check_custom_config {
-    failure_threshold = 1
-  }
-
-  tags = {
-    Name = "${var.project_name}-sd-service"
-  }
-}
-
-# ------------------------------------------------------------------------------
 # ECS Service
 # ------------------------------------------------------------------------------
 
@@ -222,10 +187,6 @@ resource "aws_ecs_service" "main" {
     subnets          = [aws_subnet.public.id]
     security_groups  = [aws_security_group.ecs_tasks.id]
     assign_public_ip = true
-  }
-
-  service_registries {
-    registry_arn = aws_service_discovery_service.app.arn
   }
 
   # Ensure the task definition is updated before the service is created
@@ -249,9 +210,8 @@ resource "aws_security_group" "ecs_tasks" {
     from_port = var.app_port
     to_port   = var.app_port
     protocol  = "tcp"
-    # This should be locked down to the VPC Link's security group in a production setup
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow traffic from API Gateway VPC Link"
+    cidr_blocks = ["${trimspace(data.http.my_ip.body)}/32"]
+    description = "Allow traffic from my IP"
   }
 
   egress {

@@ -1,6 +1,6 @@
 # クイックスタートガイド: AWS 3層Webアプリケーション
 
-このガイドは、Terraformを使用してAWSインフラをプロビジョニングし、サンプルTodoアプリケーションをデプロイする手順を説明します。
+このガイドは、Terraformを使用してAWSインフラをプロビジョ-ニングし、サンプルTodoアプリケーションをデプロイする手順を説明します。
 
 ## 前提条件
 
@@ -11,7 +11,7 @@
 
 ## 1. インフラストラクチャのデプロイ
 
-Terraformを使用して、AWS上にVPC, API Gateway, ECS, DynamoDBなどのリソースを構築します。
+Terraformを使用して、AWS上にVPC, ECS, DynamoDBなどのリソースを構築します。
 
 ```bash
 # Terraformコードが含まれるディレクトリに移動
@@ -27,8 +27,6 @@ terraform plan
 terraform apply
 ```
 
-`apply`が完了すると、API GatewayのエンドポイントURLなど、重要な出力が表示されます。
-
 ## 2. サンプルアプリケーションのデプロイ
 
 ### a. ECRリポジトリへのログイン
@@ -36,7 +34,7 @@ terraform apply
 Terraformの出力からECRリポジトリのURLを取得し、Dockerをログインさせます。
 
 ```bash
-aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin [ECRリポジトリのURL]
+aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin $(terraform output -raw ecr_repository_url)
 ```
 
 ### b. コンテナイメージのビルドとプッシュ
@@ -48,17 +46,32 @@ aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS
 cd ../src/app
 
 # Dockerイメージをビルド
-docker build -t [ECRリポジトリのURL]:latest .
+docker build -t $(terraform output -raw ecr_repository_url):latest .
 
 # ECRにイメージをプッシュ
-docker push [ECRリポジトリのURL]:latest
+docker push $(terraform output -raw ecr_repository_url):latest
 ```
 
 ## 3. 動作確認
 
-Terraformの出力にあるAPI GatewayのエンドポイントURLに対して、HTTPクライアント（curlやPostmanなど）を使用してリクエストを送信し、Todo APIが正常に動作することを確認します。
+ECSタスクのパブリックIPアドレスを取得し、HTTPクライアント（curlやPostmanなど）を使用してリクエストを送信し、Todo APIが正常に動作することを確認します。
 
-**例: Todoリストの取得**
+**a. ECSタスクのパブリックIPアドレスを取得**
+
 ```bash
-curl https://[API GatewayのエンドポイントURL]/todos
+# 実行中のタスクARNを取得
+TASK_ARN=$(aws ecs list-tasks --cluster $(terraform output -raw ecs_cluster_name) --query 'taskArns[0]' --output text)
+
+# ネットワークインターフェースIDを取得
+ENI_ID=$(aws ecs describe-tasks --cluster $(terraform output -raw ecs_cluster_name) --tasks $TASK_ARN --query 'tasks[0].attachments[0].details[?name==`networkInterfaceId`].value' --output text)
+
+# パブリックIPを取得
+PUBLIC_IP=$(aws ec2 describe-network-interfaces --network-interface-ids $ENI_ID --query 'NetworkInterfaces[0].Association.PublicIp' --output text)
+
+echo "Application Public IP: $PUBLIC_IP"
+```
+
+**b. Todoリストの取得**
+```bash
+curl http://$PUBLIC_IP:8000/
 ```

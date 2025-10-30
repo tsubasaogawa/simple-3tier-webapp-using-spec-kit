@@ -1,3 +1,7 @@
+data "http" "my_ip" {
+  url = "http://ifconfig.io/ip"
+}
+
 resource "aws_vpc" "main" {
   cidr_block           = "10.0.2.0/24"
   enable_dns_support   = true
