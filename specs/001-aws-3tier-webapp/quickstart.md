@@ -71,7 +71,30 @@ PUBLIC_IP=$(aws ec2 describe-network-interfaces --network-interface-ids $ENI_ID 
 echo "Application Public IP: $PUBLIC_IP"
 ```
 
-**b. Todoリストの取得**
+**b. APIエンドポイントのテスト**
+
+jqをインストールしておくと、JSONの出力が読みやすくなります。
+
+**Todoリストの取得 (GET)**
 ```bash
-curl http://$PUBLIC_IP:8000/
+curl http://$PUBLIC_IP:8000/todos | jq
+```
+
+**新しいTodoの作成 (POST)**
+```bash
+TASK_ID=$(curl -s -X POST http://$PUBLIC_IP:8000/todos \
+-H "Content-Type: application/json" \
+-d '{"task": "buy milk"}' | jq -r '.id')
+
+echo "Created task with ID: $TASK_ID"
+```
+
+**特定のTodoの取得 (GET)**
+```bash
+curl http://$PUBLIC_IP:8000/todos/$TASK_ID | jq
+```
+
+**特定のTodoの削除 (DELETE)**
+```bash
+curl -X DELETE http://$PUBLIC_IP:8000/todos/$TASK_ID
 ```
