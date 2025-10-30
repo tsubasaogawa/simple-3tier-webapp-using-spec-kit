@@ -1,0 +1,16 @@
+# Gitleaks Configuration
+# This file configures the Gitleaks secret scanner
+# Documentation: https://github.com/gitleaks/gitleaks
+
+title = "Gitleaks Configuration for simple-3tier-webapp"
+
+# Allowlist configuration
+[allowlist]
+description = "Allowlist for known false positives"
+paths = [
+  # Security documentation contains example passwords for demonstration
+  '''SECURITY\.md'''
+]
+
+# Optional: Add stopwords that should not be considered secrets
+stopwords = []

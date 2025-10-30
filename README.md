@@ -92,3 +92,15 @@ The API is documented using the OpenAPI specification. You can find the specific
 ## Recent Changes
 - **002-upgrade-python-version**: Upgraded Python version to 3.13 and updated dependencies.
 - **001-aws-3tier-webapp**: Initial setup of the 3-tier web application on AWS.
+
+## Security
+
+This repository is protected by automated secret scanning using [Gitleaks](https://github.com/gitleaks/gitleaks). The scanning runs:
+- On every push to main/develop branches
+- On every pull request
+- Daily at 2:00 AM UTC
+- Can be triggered manually
+
+The repository includes a `.gitleaks.toml` configuration file to customize scanning rules and prevent false positives.
+
+For security best practices and guidelines, please refer to [SECURITY.md](./SECURITY.md).
