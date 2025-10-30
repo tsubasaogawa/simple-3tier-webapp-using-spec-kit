@@ -2,7 +2,7 @@
 name = "simple-3tier-webapp"
 version = "0.1.0"
 description = "A simple 3-tier web application with FastAPI, ECS, and DynamoDB."
-requires-python = ">=3.9"
+requires-python = ">=3.13"
 dependencies = [
     "fastapi",
     "uvicorn[standard]",
