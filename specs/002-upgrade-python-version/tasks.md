@@ -47,7 +47,7 @@
 **Purpose**: デプロイメント設定を更新します。
 
 - [X] T008 [P] `terraform/ecs.tf` および関連するTerraformファイルで、ECSタスク定義がPython 3.13を使用するDockerイメージを参照するように更新します。
-- [ ] T009 Run quickstart.md validation
+- [X] T009 Run quickstart.md validation
 
 ---
 
