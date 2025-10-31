@@ -15,10 +15,10 @@ MVP（Minimum Viable Product）として、まずユーザーストーリー1（
 
 このフェーズでは、CI/CDパイプラインを構築するための基本的な設定を行います。
 
-- [ ] T001 AWS ECR (Elastic Container Registry) リポジトリをTerraformで作成する `terraform/ecr.tf`
-- [ ] T002 Terraformのstate管理用にS3バックエンドを設定する `terraform/main.tf`
-- [ ] T003 GitHub ActionsとAWSを連携させるためのIAM OIDCプロバイダをTerraformで作成する `terraform/iam.tf`
-- [ ] T004 GitHub ActionsのワークフローがECRへのプッシュやECSへのデプロイ権限を持つIAM RoleをTerraformで作成する `terraform/iam.tf`
+- [X] T001 AWS ECR (Elastic Container Registry) リポジトリをTerraformで作成する `terraform/ecr.tf`
+- [X] T002 Terraformのstate管理用にS3バックエンドを設定する `terraform/main.tf`
+- [X] T003 GitHub ActionsとAWSを連携させるためのIAM OIDCプロバイダをTerraformで作成する `terraform/iam.tf`
+- [X] T004 GitHub ActionsのワークフローがECRへのプッシュやECSへのデプロイ権限を持つIAM RoleをTerraformで作成する `terraform/iam.tf`
 
 ---
 
@@ -27,9 +27,9 @@ MVP（Minimum Viable Product）として、まずユーザーストーリー1（
 **ゴール**: featureブランチへのpushをトリガーに、lintとtestを自動実行する。
 **独立テスト**: `git push`後、GitHub Actions上でlintとtestが実行され、結果がGitHub上で確認できること。
 
-- [ ] T005 [US1] CIワークフローの基本構造を作成する `.github/workflows/ci.yml`
-- [ ] T006 [P] [US1] Pythonコードのlintチェックを行うジョブを追加する `.github/workflows/ci.yml`
-- [ ] T007 [P] [US1] Pytestを用いた単体テストを実行するジョブを追加する `.github/workflows/ci.yml`
+- [X] T005 [US1] CIワークフローの基本構造を作成する `.github/workflows/ci.yml`
+- [X] T006 [P] [US1] Pythonコードのlintチェックを行うジョブを追加する `.github/workflows/ci.yml`
+- [X] T007 [P] [US1] Pytestを用いた単体テストを実行するジョブを追加する `.github/workflows/ci.yml`
 
 ---
 
@@ -38,10 +38,10 @@ MVP（Minimum Viable Product）として、まずユーザーストーリー1（
 **ゴール**: `main`ブランチへのマージをトリガーに、DockerイメージをビルドしECRにプッシュする。
 **独立テスト**: `main`ブランチへのマージ後、新しいタグが付与されたコンテナイメージがECRリポジトリに存在すること。
 
-- [ ] T008 [US2] CDワークフローの基本構造を作成する `.github/workflows/cd.yml`
-- [ ] T009 [US2] OIDCを利用してAWS認証を設定し、IAM Roleを引き受けるステップを追加する `.github/workflows/cd.yml`
-- [ ] T010 [US2] AWS ECRへのログイン処理を追加する `.github/workflows/cd.yml`
-- [ ] T011 [US2] Dockerイメージをビルドし、コミットハッシュでタグ付けしてECRにプッシュするジョブを追加する `.github/workflows/cd.yml`
+- [X] T008 [US2] CDワークフローの基本構造を作成する `.github/workflows/cd.yml`
+- [X] T009 [US2] OIDCを利用してAWS認証を設定し、IAM Roleを引き受けるステップを追加する `.github/workflows/cd.yml`
+- [X] T010 [US2] AWS ECRへのログイン処理を追加する `.github/workflows/cd.yml`
+- [X] T011 [US2] Dockerイメージをビルドし、コミットハッシュでタグ付けしてECRにプッシュするジョブを追加する `.github/workflows/cd.yml`
 
 ---
 
@@ -50,16 +50,16 @@ MVP（Minimum Viable Product）として、まずユーザーストーリー1（
 **ゴール**: 新しいイメージがECRにプッシュされた後、ステージング環境へ自動デプロイする。
 **独立テスト**: デプロイ後、ステージング環境のアプリケーションが新しいイメージで動作していること。
 
-- [ ] T012 [US3] OIDCによるAWS認証を利用してTerraformのセットアップと実行を行うジョブをCDワークフローに追加する `.github/workflows/cd.yml`
-- [ ] T013 [US3] イメージのビルド＆プッシュジョブが完了した後にデプロイジョブが実行されるように依存関係を設定する `.github/workflows/cd.yml`
-- [ ] T014 [US3] 新しいDockerイメージのタグをTerraformの変数として渡し、ECSサービスを更新するように設定する `terraform/ecs.tf`
+- [X] T012 [US3] OIDCによるAWS認証を利用してTerraformのセットアップと実行を行うジョブをCDワークフローに追加する `.github/workflows/cd.yml`
+- [X] T013 [US3] イメージのビルド＆プッシュジョブが完了した後にデプロイジョブが実行されるように依存関係を設定する `.github/workflows/cd.yml`
+- [X] T014 [US3] 新しいDockerイメージのタグをTerraformの変数として渡し、ECSサービスを更新するように設定する `terraform/ecs.tf`
 
 ---
 
 ## フェーズ 5: ポリッシュとドキュメント
 
-- [ ] T015 README.mdにCI/CDパイプラインの概要とOIDC設定について追記する `README.md`
-- [ ] T016 [P] README.mdにGitHub Actionsのステータスバッジを追加する `README.md`
+- [X] T015 README.mdにCI/CDパイプラインの概要とOIDC設定について追記する `README.md`
+- [X] T016 [P] README.mdにGitHub Actionsのステータスバッジを追加する `README.md`
 
 ---
 
