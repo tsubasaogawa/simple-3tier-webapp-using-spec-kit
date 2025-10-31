@@ -4,6 +4,8 @@
 .gitignore
 .dockerignore
 .terraformignore
+.vscode/
+.idea/
 
 # Python
 __pycache__/
@@ -14,3 +16,11 @@ venv/
 # Logs
 *.log
 *.log.*
+
+# Test files
+tests/
+.pytest_cache/
+coverage/
+htmlcov/
+.coverage
+.coverage.*

@@ -1,5 +1,8 @@
 # Simple 3-Tier Web App on AWS
 
+[![CI Workflow](https://github.com/tsubasaogawa/simple-3tier-webapp-using-spec-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/tsubasaogawa/simple-3tier-webapp-using-spec-kit/actions/workflows/ci.yml)
+[![CD Workflow](https://github.com/tsubasaogawa/simple-3tier-webapp-using-spec-kit/actions/workflows/cd.yml/badge.svg)](https://github.com/tsubasaogawa/simple-3tier-webapp-using-spec-kit/actions/workflows/cd.yml)
+
 This project provides a simple 3-tier web application infrastructure on AWS, designed for cost-effectiveness and simplicity. It includes a sample FastAPI application for demonstration purposes.
 
 ## Architecture
@@ -44,47 +47,53 @@ This architecture is optimized for low cost by avoiding managed NAT gateways, lo
 
 ## Deployment
 
-1.  **Deploy the Infrastructure**
+このプロジェクトはGitHub Actionsを用いたCI/CDパイプラインを構築しており、コードの品質チェック、コンテナイメージのビルドとプッシュ、そしてステージング環境へのデプロイを自動化します。
 
-    Use Terraform to create the AWS resources.
+### CIワークフロー
 
+-   **トリガー**: `main`ブランチ以外のフィーチャーブランチへの`git push`。
+-   **内容**: Pythonコードの静的解析（Ruff）と単体テスト（Pytest）を実行し、コード品質を検証します。
+-   **結果**: GitHub Actionsの「Actions」タブでワークフローの実行結果を確認できます。
+
+### CDワークフロー
+
+-   **トリガー**: `main`ブランチへのマージ。
+-   **内容**: 
+    1.  Dockerイメージをビルドし、コミットハッシュでタグ付けしてAmazon ECRにプッシュします。
+    2.  Terraformを用いてAWSインフラをプロビジョニングし、ECSサービスを更新して新しいDockerイメージをデプロイします。
+-   **認証**: GitHub ActionsはAWS IAM OIDCプロバイダを利用してAWS認証を行います。これにより、AWS認証情報をGitHubリポジトリに直接保存することなく、セキュアにAWSリソースにアクセスできます。
+-   **結果**: ステージング環境にアプリケーションの新しいバージョンがデプロイされます。
+
+### デプロイ手順
+
+1.  **フィーチャーブランチの作成と変更**: 新しい機能やバグ修正のためにフィーチャーブランチを作成し、コードを変更します。
     ```bash
-    cd terraform
-    terraform init
-    terraform apply
+    git checkout -b feature/my-new-feature
+    # コード変更
+    git commit -am "feat: add my new feature"
     ```
-
-2.  **Deploy the Sample Application**
-
-    Build the Docker image for the FastAPI application and push it to ECR.
-
+2.  **GitHubへのプッシュ**: フィーチャーブランチをGitHubにプッシュすると、CIワークフローが自動的に実行されます。
     ```bash
-    # Log in to the ECR repository
-    aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin $(terraform output -raw ecr_repository_url)
-
-    # Build and push the Docker image
-    cd ../src/app
-    docker build -t $(terraform output -raw ecr_repository_url):latest .
-    docker push $(terraform output -raw ecr_repository_url):latest
+    git push origin feature/my-new-feature
     ```
+3.  **プルリクエストの作成とマージ**: CIワークフローが成功したら、`main`ブランチへのプルリクエストを作成し、レビュー後にマージします。これによりCDワークフローがトリガーされ、ステージング環境へのデプロイが自動的に行われます。
 
-3.  **Verify the Deployment**
+### デプロイの確認
 
-    Retrieve the public IP of the running ECS task and test the API endpoints.
+ECSタスクのパブリックIPを取得し、APIエンドポイントをテストすることでデプロイを確認できます。
 
-    ```bash
-    # Get the public IP of the ECS task
-    CLUSTER_NAME=$(terraform output -raw ecs_cluster_name)
-    TASK_ARN=$(aws ecs list-tasks --cluster $CLUSTER_NAME --query 'taskArns[0]' --output text)
-    ENI_ID=$(aws ecs describe-tasks --cluster $CLUSTER_NAME --tasks $TASK_ARN --query 'tasks[0].attachments[0].details[?name==`networkInterfaceId`].value' --output text)
-    PUBLIC_IP=$(aws ec2 describe-network-interfaces --network-interface-ids $ENI_ID --query 'NetworkInterfaces[0].Association.PublicIp' --output text)
+```bash
+# Get the public IP of the ECS task
+CLUSTER_NAME=$(terraform output -raw ecs_cluster_name)
+TASK_ARN=$(aws ecs list-tasks --cluster $CLUSTER_NAME --query 'taskArns[0]' --output text)
+ENI_ID=$(aws ecs describe-tasks --cluster $CLUSTER_NAME --tasks $TASK_ARN --query 'tasks[0].attachments[0].details[?name==`networkInterfaceId`].value' --output text)
+PUBLIC_IP=$(aws ec2 describe-network-interfaces --network-interface-ids $ENI_ID --query 'NetworkInterfaces[0].Association.PublicIp' --output text)
 
-    echo "Application Public IP: $PUBLIC_IP"
+echo "Application Public IP: $PUBLIC_IP"
 
-    # Test the API
-    curl http://$PUBLIC_IP:8000/todos | jq
-    ```
-
+# Test the API
+curl http://$PUBLIC_IP:8000/todos | jq
+```
 ## API Reference
 
 The API is documented using the OpenAPI specification. You can find the specification file here: [openapi.yml](./specs/001-aws-3tier-webapp/contracts/openapi.yml).

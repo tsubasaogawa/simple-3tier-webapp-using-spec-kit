@@ -28,7 +28,6 @@ tests/
 - 001-update-readme: Added Python 3.13.0 + FastAPI, Uvicorn, Boto3
 - 002-upgrade-python-version: Added Python 3.13 + FastAPI, Uvicorn, Boto3
 
-- 001-aws-3tier-webapp: Added
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
