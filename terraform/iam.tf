@@ -75,10 +75,6 @@ resource "aws_iam_policy" "github_actions_policy" {
           "s3:DeleteObject",
           "s3:ListBucket"
         ]
-        Resource = [
-          "arn:aws:s3:::tsubasaogawa-terraform-state",
-          "arn:aws:s3:::tsubasaogawa-terraform-state/*"
-        ]
       },
       {
         Effect = "Allow"
