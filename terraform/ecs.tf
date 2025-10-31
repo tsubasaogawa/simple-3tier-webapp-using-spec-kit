@@ -195,6 +195,10 @@ resource "aws_ecs_service" "main" {
   tags = {
     Name = "${var.project_name}-service"
   }
+
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
 }
 
 # ------------------------------------------------------------------------------

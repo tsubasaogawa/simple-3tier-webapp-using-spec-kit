@@ -29,7 +29,7 @@ resource "aws_iam_role" "github_actions_role" {
         Condition = {
           StringEquals = {
             "token.actions.githubusercontent.com:aud" : "sts.amazonaws.com",
-            "token.actions.githubusercontent.com:sub" : "repo:${var.github_owner}/${var.github_repo}:ref:refs/heads/${var.github_branch}"
+            "token.actions.githubusercontent.com:sub" : "repo:${var.github_owner}/${var.github_repo}:*"
           }
         }
       }
@@ -44,7 +44,6 @@ resource "aws_iam_role" "github_actions_role" {
 resource "aws_iam_policy" "github_actions_policy" {
   name        = "${var.project_name}-github-actions-policy"
   description = "Policy for GitHub Actions to push to ECR, deploy to ECS, and manage Terraform state"
-  role        = aws_iam_role.github_actions_role.id
 
   policy = jsonencode({
     Version = "2012-10-17"
