@@ -27,9 +27,11 @@ resource "aws_iam_role" "github_actions_role" {
         }
         Action = "sts:AssumeRoleWithWebIdentity"
         Condition = {
+          StringLike = {
+            "token.actions.githubusercontent.com:sub" : "repo:${var.github_owner}/${var.github_repo}:*",
+          }
           StringEquals = {
             "token.actions.githubusercontent.com:aud" : "sts.amazonaws.com",
-            "token.actions.githubusercontent.com:sub" : "repo:${var.github_owner}/${var.github_repo}:*"
           }
         }
       }
@@ -75,16 +77,11 @@ resource "aws_iam_policy" "github_actions_policy" {
           "s3:DeleteObject",
           "s3:ListBucket"
         ]
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "dynamodb:GetItem",
-          "dynamodb:PutItem",
-          "dynamodb:DeleteItem"
+        Resource = [
+          "arn:aws:s3:::${var.tfstate_bucket_name}",
+          "arn:aws:s3:::${var.tfstate_bucket_name}/*",
         ]
-        Resource = "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.current.account_id}:table/simple-3tier-webapp-tfstate-lock"
-      }
+      },
     ]
   })
 }

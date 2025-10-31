@@ -50,5 +50,5 @@ jobs:
         working-directory: terraform/
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var "image_tag=${{ github.sha }}"
+        run: terraform apply -auto-approve -var "image_tag=${{ github.sha }}" -var "github_owner=${{ github.repository_owner }}" -var "github_repo=${{ github.event.repository.name }}" -var "tfstate_bucket_name=${{ vars.TFSTATE_BUCKET_NAME }}"
         working-directory: terraform/
