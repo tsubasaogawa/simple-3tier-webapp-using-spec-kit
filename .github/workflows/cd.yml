@@ -5,11 +5,11 @@ on:
     branches:
       - main
     paths:
-      - 'src/**'
-      - 'tests/**'
-      - 'pyproject.toml'
-      - 'poetry.lock'
-      - 'terraform/**'
+      - "src/**"
+      - "tests/**"
+      - "pyproject.toml"
+      - "poetry.lock"
+      - "terraform/**"
 
 permissions:
   id-token: write
@@ -45,7 +45,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
-        run: terraform init -backend-config="bucket=tsubasaogawa-terraform-state" -backend-config="key=simple-3tier-webapp/terraform.tfstate" -backend-config="region=ap-northeast-1" -backend-config="encrypt=true" -backend-config="dynamodb_table=simple-3tier-webapp-tfstate-lock"
+        run: terraform init -backend-config="bucket=${{ vars.TFSTATE_BUCKET_NAME }}" -backend-config="key=simple-3tier-webapp/terraform.tfstate" -backend-config="region=ap-northeast-1" -backend-config="encrypt=true" -backend-config="dynamodb_table=simple-3tier-webapp-tfstate-lock"
         working-directory: terraform/
 
       - name: Terraform Apply
