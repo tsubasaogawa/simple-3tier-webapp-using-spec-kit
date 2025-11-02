@@ -65,6 +65,7 @@ resource "aws_iam_policy" "github_actions_policy" {
         Effect = "Allow"
         Action = [
           "ecr:Describe*",
+          "ecr:List*",
           "ecr:GetAuthorizationToken",
         ]
         Resource = "*"
@@ -89,6 +90,7 @@ resource "aws_iam_policy" "github_actions_policy" {
           "ecs:*",
           "cloudwatch:*",
           "iam:Get*",
+          "iam:List*",
           "ec2:*",
           "vpc:*",
         ]
