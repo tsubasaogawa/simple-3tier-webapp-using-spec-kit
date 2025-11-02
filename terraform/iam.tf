@@ -53,7 +53,6 @@ resource "aws_iam_policy" "github_actions_policy" {
       {
         Effect = "Allow"
         Action = [
-          "ecr:GetAuthorizationToken",
           "ecr:BatchCheckLayerAvailability",
           "ecr:InitiateLayerUpload",
           "ecr:UploadLayerPart",
@@ -65,9 +64,10 @@ resource "aws_iam_policy" "github_actions_policy" {
       {
         Effect = "Allow"
         Action = [
-          "ecs:UpdateService"
+          "ecr:Describe*",
+          "ecr:GetAuthorizationToken",
         ]
-        Resource = "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:service/${var.project_name}/${var.project_name}-service"
+        Resource = "*"
       },
       {
         Effect = "Allow"
@@ -82,6 +82,18 @@ resource "aws_iam_policy" "github_actions_policy" {
           "arn:aws:s3:::${var.tfstate_bucket_name}/*",
         ]
       },
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:*",
+          "ecs:*",
+          "cloudwatch:*",
+          "iam:Get*",
+          "ec2:*",
+          "vpc:*",
+        ]
+        Resource = "*"
+      }
     ]
   })
 }
