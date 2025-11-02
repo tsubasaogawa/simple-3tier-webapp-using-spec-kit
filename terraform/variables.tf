@@ -42,3 +42,9 @@ variable "tfstate_bucket_name" {
   description = "S3 bucket name for Terraform state storage"
   type        = string
 }
+
+variable "allow_everyone_to_access_app" {
+  description = "Whether to allow public access to the application"
+  type        = bool
+  default     = true
+}

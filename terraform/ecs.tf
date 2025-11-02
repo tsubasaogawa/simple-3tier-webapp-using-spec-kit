@@ -211,11 +211,11 @@ resource "aws_security_group" "ecs_tasks" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    from_port = var.app_port
-    to_port   = var.app_port
-    protocol  = "tcp"
-    cidr_blocks = ["${trimspace(data.http.my_ip.body)}/32"]
-    description = "Allow traffic from my IP"
+    from_port   = var.app_port
+    to_port     = var.app_port
+    protocol    = "tcp"
+    cidr_blocks = [var.allow_everyone_to_access_app ? "0.0.0.0/0" : "${trimspace(data.http.my_ip.body)}/32"]
+    description = "Allow traffic"
   }
 
   egress {

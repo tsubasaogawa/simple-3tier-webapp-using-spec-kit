@@ -92,6 +92,7 @@ resource "aws_iam_policy" "github_actions_policy" {
           "logs:*",
           "iam:Get*",
           "iam:List*",
+          "iam:PassRole",
           "ec2:*",
           "vpc:*",
         ]
